@@ -28,11 +28,11 @@ class DummyExtension {
           arguments: {
             MESSAGE: {
               type: ArgumentType.STRING,
-              defaultValue: 'Hello, World!'
-            }
-          }
-        }
-      ]
+              defaultValue: 'Hello, World!',
+            },
+          },
+        },
+      ],
     }
   }
 
