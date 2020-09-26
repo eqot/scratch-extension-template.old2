@@ -1,13 +1,21 @@
 import Runtime from 'scratch-vm/src/engine/runtime'
-import ArgumentType from 'scratch-vm/src/extension-support/argument-type'
-import BlockType from 'scratch-vm/src/extension-support/block-type'
-import Cast from 'scratch-vm/src/util/cast'
+
+import { translations } from './translations'
+import { Blocks } from './blocks'
 
 class DummyExtension {
-  private runtime: Runtime
+  private static BLOCKS_ORDER = ['say', '---', 'showSprite']
 
-  constructor(runtime: Runtime) {
+  private runtime: Runtime
+  private blocks
+
+  constructor(runtime: Runtime, locale?: string) {
     this.runtime = runtime
+
+    translations.initialize(this.runtime, locale)
+
+    this.blocks = Blocks(DummyExtension.BLOCKS_ORDER)
+    this.blocks.inject(this)
   }
 
   getInfo() {
@@ -20,27 +28,9 @@ class DummyExtension {
       color2: '#808080',
       color3: '#606060',
 
-      blocks: [
-        {
-          opcode: 'say',
-          blockType: BlockType.REPORTER,
-          text: 'say [MESSAGE]',
-          arguments: {
-            MESSAGE: {
-              type: ArgumentType.STRING,
-              defaultValue: 'Hello, World!',
-            },
-          },
-        },
-      ],
+      blocks: this.blocks.info(),
+      menus: this.blocks.menus(),
     }
-  }
-
-  say(args: any) {
-    const message = Cast.toString(args.MESSAGE)
-    console.log(message)
-
-    return message
   }
 }
 
